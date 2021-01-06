@@ -364,7 +364,8 @@ class PlayItem(InfoDict):
         return real_length - 2
 
     def update_counts(self):
-        self["NumberOfAngles"] = len(self["Angles"]) + 1
+        if self["IsMultiAngle"]:
+            self["NumberOfAngles"] = len(self["Angles"]) + 1
 
     def check_constraints(self):
         super().check_constraints()

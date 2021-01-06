@@ -19,7 +19,7 @@ pip install -e .
  - [ ] Movie Object parsing, editing and saving
 
 ## Scripts
-Methods/heuristics for each script will be explained in the project wiki.
+The purposes of the scripts are briefly described in the usages, more documentation may be available in the future.
 
 ## References
  - https://github.com/lw/BluRay/wiki

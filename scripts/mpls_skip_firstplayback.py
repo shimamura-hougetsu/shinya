@@ -19,7 +19,7 @@ def main(source, destination):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser('enable skipping, forwarding, etc in ads/warnings')
     parser.add_argument("source", type=str, help="source mpls file")
     parser.add_argument("destination", type=str, help="mpls save destination")
     args = parser.parse_args()

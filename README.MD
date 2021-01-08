@@ -13,10 +13,10 @@ pip install -e .
 
 ## Feature and Todo List
  - [x] MPLS parsing, editing and saving
- - [ ] Extension data parsing, editing and saving
  - [ ] CLPI parsing, editing and saving
- - [ ] Index Table parsing, editing and saving
- - [ ] Movie Object parsing, editing and saving
+ - [x] Index Table parsing, editing and saving
+ - [x] Movie Object parsing, editing and saving
+ - [ ] Extension data parsing, editing and saving
 
 ## Scripts
 The purposes of the scripts are briefly described in the usages, more documentation may be available in the future.

@@ -127,11 +127,11 @@ class AppInfoPlayList(InfoDict):
         self.check_constraints()
 
         flags = (
-                self["RandomAccessFlag"] * 2 ** 15
-                + self["AudioMixFlag"] * 2 ** 14
-                + self["LosslessBypassFlag"] * 2 ** 13
-                + self["MVCBaseViewRFlag"] * 2 ** 12
-                + self["SDRConversionNotificationFlag"] * 2 ** 11
+                (self["RandomAccessFlag"] << 15)
+                + (self["AudioMixFlag"] << 14)
+                + (self["LosslessBypassFlag"] << 13)
+                + (self["MVCBaseViewRFlag"] << 12)
+                + (self["SDRConversionNotificationFlag"] << 11)
                 + self["reserved3"]
         )
 
@@ -203,40 +203,40 @@ class UOMaskTable(InfoDict):
         self.check_constraints()
 
         uo_mask_table = (
-                self["MenuCall"] * 2 ** 63
-                + self["TitleSearch"] * 2 ** 62
-                + self["ChapterSearch"] * 2 ** 61
-                + self["TimeSearch"] * 2 ** 60
-                + self["SkipToNextPoint"] * 2 ** 59
-                + self["SkipToPrevPoint"] * 2 ** 58
-                + self["reserved1"] * 2 ** 57
-                + self["Stop"] * 2 ** 56
-                + self["PauseOn"] * 2 ** 55
-                + self["reserved2"] * 2 ** 54
-                + self["StillOff"] * 2 ** 53
-                + self["ForwardPlay"] * 2 ** 52
-                + self["BackwardPlay"] * 2 ** 51
-                + self["Resume"] * 2 ** 50
-                + self["MoveUpSelectedButton"] * 2 ** 49
-                + self["MoveDownSelectedButton"] * 2 ** 48
-                + self["MoveLeftSelectedButton"] * 2 ** 47
-                + self["MoveRightSelectedButton"] * 2 ** 46
-                + self["SelectButton"] * 2 ** 45
-                + self["ActivateButton"] * 2 ** 44
-                + self["SelectAndActivateButton"] * 2 ** 43
-                + self["PrimaryAudioStreamNumberChange"] * 2 ** 42
-                + self["reserved3"] * 2 ** 41
-                + self["AngleNumberChange"] * 2 ** 40
-                + self["PopupOn"] * 2 ** 39
-                + self["PopupOff"] * 2 ** 38
-                + self["PrimaryPGEnableDisable"] * 2 ** 37
-                + self["PrimaryPGStreamNumberChange"] * 2 ** 36
-                + self["SecondaryVideoEnableDisable"] * 2 ** 35
-                + self["SecondaryVideoStreamNumberChange"] * 2 ** 34
-                + self["SecondaryAudioEnableDisable"] * 2 ** 33
-                + self["SecondaryAudioStreamNumberChange"] * 2 ** 32
-                + self["reserved4"] * 2 ** 31
-                + self["SecondaryPGStreamNumberChange"] * 2 ** 30
+                (self["MenuCall"] << 63)
+                + (self["TitleSearch"] << 62)
+                + (self["ChapterSearch"] << 61)
+                + (self["TimeSearch"] << 60)
+                + (self["SkipToNextPoint"] << 59)
+                + (self["SkipToPrevPoint"] << 58)
+                + (self["reserved1"] << 57)
+                + (self["Stop"] << 56)
+                + (self["PauseOn"] << 55)
+                + (self["reserved2"] << 54)
+                + (self["StillOff"] << 53)
+                + (self["ForwardPlay"] << 52)
+                + (self["BackwardPlay"] << 51)
+                + (self["Resume"] << 50)
+                + (self["MoveUpSelectedButton"] << 49)
+                + (self["MoveDownSelectedButton"] << 48)
+                + (self["MoveLeftSelectedButton"] << 47)
+                + (self["MoveRightSelectedButton"] << 46)
+                + (self["SelectButton"] << 45)
+                + (self["ActivateButton"] << 44)
+                + (self["SelectAndActivateButton"] << 43)
+                + (self["PrimaryAudioStreamNumberChange"] << 42)
+                + (self["reserved3"] << 41)
+                + (self["AngleNumberChange"] << 40)
+                + (self["PopupOn"] << 39)
+                + (self["PopupOff"] << 38)
+                + (self["PrimaryPGEnableDisable"] << 37)
+                + (self["PrimaryPGStreamNumberChange"] << 36)
+                + (self["SecondaryVideoEnableDisable"] << 35)
+                + (self["SecondaryVideoStreamNumberChange"] << 34)
+                + (self["SecondaryAudioEnableDisable"] << 33)
+                + (self["SecondaryAudioStreamNumberChange"] << 32)
+                + (self["reserved4"] << 31)
+                + (self["SecondaryPGStreamNumberChange"] << 30)
                 + self["reserved5"]
         )
 
@@ -318,10 +318,8 @@ class PlayItem(InfoDict):
         self["ClipInformationFileName"] = data[2:7].decode("utf-8")
         self["ClipCodecIdentifier"] = data[7:11].decode("utf-8")
         flags = unpack_bytes(data, 11, 2)
-        self["reserved1"] = flags // 2 ** 5
-        flags %= 2 ** 5
-        self["IsMultiAngle"] = flags // 2 ** 4
-        self["ConnectionCondition"] = flags % 2 ** 4
+        self["reserved1"], flags = divmod(flags, 2 ** 5)
+        self["IsMultiAngle"], self["ConnectionCondition"] = divmod(flags, 2 ** 4)
         self["RefToSTCID"] = unpack_bytes(data, 13, 1)
         self["INTime"] = unpack_bytes(data, 14, 4)
         self["OUTTime"] = unpack_bytes(data, 18, 4)
@@ -379,8 +377,8 @@ class PlayItem(InfoDict):
         data += self["ClipInformationFileName"].encode("utf-8")
         data += self["ClipCodecIdentifier"].encode("utf-8")
         flags = (
-                self["reserved1"] * 2 ** 5
-                + self["IsMultiAngle"] * 2 ** 4
+                (self["reserved1"] << 5)
+                + (self["IsMultiAngle"] << 4)
                 + self["ConnectionCondition"]
         )
         data += pack_bytes(flags, 2)
@@ -389,7 +387,7 @@ class PlayItem(InfoDict):
         data += pack_bytes(self["OUTTime"], 4)
         data += self["UOMaskTable"].to_bytes()
         data += pack_bytes(
-            self["PlayItemRandomAccessFlag"] * 2 ** 7 + self["reserved2"], 1
+            (self["PlayItemRandomAccessFlag"] << 7) + self["reserved2"], 1
         )
         data += pack_bytes(self["StillMode"], 1)
         if self["StillMode"] == 1:
@@ -400,8 +398,8 @@ class PlayItem(InfoDict):
         if self["IsMultiAngle"]:
             data += pack_bytes(self["NumberOfAngles"], 1)
             data += pack_bytes(
-                self["reserved4"] * 2 ** 2
-                + self["IsDifferentAudios"] * 2
+                (self["reserved4"] << 2)
+                + (self["IsDifferentAudios"] << 1)
                 + self["IsSeamlessAngleChange"],
                 1
             )
@@ -658,25 +656,25 @@ class StreamAttributes(InfoDict):
             data += pack_bytes(self["StreamCodingType"], 1)
             if self["StreamCodingType"] in [0x01, 0x02, 0x1B, 0xEA]:
                 data += pack_bytes(
-                    self["VideoFormat"] * 2 ** 4 + self["FrameRate"], 1
+                    (self["VideoFormat"] << 4) + self["FrameRate"], 1
                 )
                 data += b"\x00\x00\x00"
 
             elif self["StreamCodingType"] == 0x24:
                 data += pack_bytes(
-                    self["VideoFormat"] * 2 ** 4 + self["FrameRate"], 1
+                    (self["VideoFormat"] << 4) + self["FrameRate"], 1
                 )
                 data += pack_bytes(
-                    self["DynamicRangeType"] * 2 ** 4 + self["ColorSpace"], 1
+                    (self["DynamicRangeType"] << 4) + self["ColorSpace"], 1
                 )
                 data += pack_bytes(
-                    self["CRFlag"] * 2 ** 7 + self["HDRPlusFlag"] * 2 ** 6, 1
+                    (self["CRFlag"] << 7) + (self["HDRPlusFlag"] << 6), 1
                 )
                 data += b"\x00"
 
             elif self["StreamCodingType"] in [0x03, 0x04, 0x80, 0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0xA1, 0xA2]:
                 data += pack_bytes(
-                    self["AudioFormat"] * 2 ** 4 + self["SampleRate"], 1
+                    (self["AudioFormat"] << 4) + self["SampleRate"], 1
                 )
                 data += self["LanguageCode"].encode("utf-8")
 
@@ -754,10 +752,8 @@ class SubPlayItem(InfoDict):
         self["ClipInformationFileName"] = data[2:7].decode("utf-8")
         self["ClipCodecIdentifier"] = data[7:11].decode("utf-8")
         flags = unpack_bytes(data, 11, 4)
-        self["reserved1"] = flags // 2 ** 5
-        flags %= 2 ** 5
-        self["ConnectionCondition"] = flags // 2
-        self["IsMultiClipEntries"] = flags % 2
+        self["reserved1"], flags = divmod(flags, 2 ** 5)
+        self["ConnectionCondition"], self["IsMultiClipEntries"] = divmod(flags, 2)
         self["RefToSTCID"] = unpack_bytes(data, 15, 1)
         self["INTime"] = unpack_bytes(data, 16, 4)
         self["OUTTime"] = unpack_bytes(data, 20, 4)
@@ -796,8 +792,8 @@ class SubPlayItem(InfoDict):
         data += self["ClipInformationFileName"].encode("utf-8")
         data += self["ClipCodecIdentifier"].encode("utf-8")
         flags = (
-                self["reserved1"] * 2 ** 5
-                + self["ConnectionCondition"] * 2
+                (self["reserved1"] << 5)
+                + (self["ConnectionCondition"] << 1)
                 + self["IsMultiClipEntries"]
         )
         data += pack_bytes(flags, 4)

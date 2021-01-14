@@ -1,8 +1,8 @@
 import os
 
-from shiny.extension_data import ExtensionData
-from shiny.info_dict import InfoDict
-from shiny.io import unpack_bytes, pack_bytes
+from shinya.extension_data import ExtensionData
+from shinya.info_dict import InfoDict
+from shinya.io import unpack_bytes, pack_bytes
 
 
 class MPLSHeader(InfoDict):
@@ -49,21 +49,17 @@ class MPLSHeader(InfoDict):
         assert data == self.to_bytes()
         return self
 
-    def update_constants(self):
-        super().update_constants()
+    def update_addresses(self, offset=0):
         playlist_display_size = self["PlayList"].calculate_display_size()
         playlist_mark_display_size = self["PlayListMark"].calculate_display_size()
         self["PlayListMarkStartAddress"] = self["PlayListStartAddress"] + playlist_display_size + 4
         if self["ExtensionDataStartAddress"]:
-            extension_display_size = self["ExtensionData"].calculate_display_size()
             self["ExtensionDataStartAddress"] = self["PlayListMarkStartAddress"] + playlist_mark_display_size + 4
 
     def check_constraints(self):
         appinfo_display_size = self["AppInfoPlayList"].calculate_display_size()
         playlist_display_size = self["PlayList"].calculate_display_size()
         playlist_mark_display_size = self["PlayListMark"].calculate_display_size()
-        if self["ExtensionDataStartAddress"]:
-            extension_display_size = self["ExtensionData"].calculate_display_size()
 
         assert appinfo_display_size == 14
         assert self["PlayListStartAddress"] == 58
@@ -911,6 +907,8 @@ class MoviePlaylist:
         self.dict = MPLSHeader.from_bytes(data)
 
     def save(self, destination, overwrite=False):
+        self.dict.update_constants()
+        self.dict.update_addresses()
         if os.path.exists(destination) and not overwrite:
             raise FileExistsError()
         os.makedirs(os.path.dirname(destination), exist_ok=True)

@@ -21,6 +21,9 @@ class InfoDict(OrderedDict):
     def update_counts(self):
         pass
 
+    def update_addresses(self, offset=0):
+        pass
+
     def update_constants(self):
         for key in self.keys():
             if isinstance(self[key], InfoDict):

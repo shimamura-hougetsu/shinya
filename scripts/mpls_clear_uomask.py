@@ -1,6 +1,6 @@
 import argparse
 
-from shiny.mpls import MoviePlaylist
+from shinya.mpls import MoviePlaylist
 
 
 def process_uomask(d):

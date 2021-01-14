@@ -1,4 +1,4 @@
-from shiny.info_dict import InfoDict
+from shinya.info_dict import InfoDict
 
 
 class ExtensionData(InfoDict):

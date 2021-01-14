@@ -1,9 +1,9 @@
 import os
 from enum import IntEnum
 
-from shiny.extension_data import ExtensionData
-from shiny.info_dict import InfoDict
-from shiny.io import unpack_bytes, pack_bytes
+from shinya.extension_data import ExtensionData
+from shinya.info_dict import InfoDict
+from shinya.io import unpack_bytes, pack_bytes
 
 
 class MOBJHeader(InfoDict):
@@ -35,16 +35,14 @@ class MOBJHeader(InfoDict):
         assert data == self.to_bytes()
         return self
 
-    def update_constants(self):
-        super().update_constants()
+    def update_addresses(self, offset=0):
         if self["ExtensionDataStartAddress"]:
-            extension_display_size = self["ExtensionData"].calculate_display_size()
             self["ExtensionDataStartAddress"] = 40 + self['MovieObjects']['Length'] + 4
 
     def check_constraints(self):
         if self["ExtensionDataStartAddress"]:
-            extension_display_size = self["ExtensionData"].calculate_display_size()
-            assert (40 + extension_display_size + 4 == self["ExtensionDataStartAddress"])
+            movie_object_length = self["MovieObjects"].calculate_display_size()
+            assert (self["PlayListMarkStartAddress"] + movie_object_length + 4 == self["ExtensionDataStartAddress"])
 
     def to_bytes(self):
         self.check_constraints()
@@ -330,6 +328,8 @@ class MovieObjectFile:
         self.dict = MOBJHeader.from_bytes(data)
 
     def save(self, destination, overwrite=False):
+        self.dict.update_constants()
+        self.dict.update_addresses()
         if os.path.exists(destination) and not overwrite:
             raise FileExistsError()
         os.makedirs(os.path.dirname(destination), exist_ok=True)

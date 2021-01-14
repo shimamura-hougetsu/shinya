@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="shiny",
+    name="shinya",
     version="0.1a1",
     packages=find_packages(),
     install_requires=[],

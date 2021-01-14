@@ -1,8 +1,8 @@
 import argparse
 
-from shiny.info_dict import InfoDict
-from shiny.mpls import MoviePlaylist
-from shiny.mpls import StreamEntry, StreamAttributes
+from shinya.info_dict import InfoDict
+from shinya.mpls import MoviePlaylist
+from shinya.mpls import StreamEntry, StreamAttributes
 
 
 def main(source, destination, clip_filenames, language):
@@ -40,7 +40,6 @@ def main(source, destination, clip_filenames, language):
         stream_item['StreamEntry'] = se
         stream_item['StreamAttributes'] = sa
         subtitle_list.append(stream_item)
-        mpls.dict.update_constants()
     mpls.save(destination)
 
 

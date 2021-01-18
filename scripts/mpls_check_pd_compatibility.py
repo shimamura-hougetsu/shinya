@@ -1,14 +1,14 @@
 import argparse
 
-from shinya.mpls import MoviePlaylist
+from shinya.bd.mpls import MoviePlaylist
 
 
 def main(source, destination):
     mpls = MoviePlaylist(source)
-    for subpath in mpls.dict['PlayList']['SubPaths']:
+    for subpath in mpls.data['PlayList']['SubPaths']:
         if subpath['SubPathType'] == 5:
             for subplayitem in subpath['SubPlayItems']:
-                playitem = mpls.dict['PlayList']['PlayItems'][subplayitem['SyncPlayItemID']]
+                playitem = mpls.data['PlayList']['PlayItems'][subplayitem['SyncPlayItemID']]
                 assert subplayitem['SyncStartPTS'] == subplayitem['INTime']
                 assert subplayitem['INTime'] == playitem['INTime']
                 for pgs_info in playitem['STNTable']['PrimaryPGStreamEntries']:

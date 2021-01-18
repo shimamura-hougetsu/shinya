@@ -1,6 +1,6 @@
 import argparse
 
-from shinya.mpls import MoviePlaylist
+from shinya.bd.mpls import MoviePlaylist
 
 
 def main(source, destination):

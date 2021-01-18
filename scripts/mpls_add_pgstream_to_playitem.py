@@ -1,8 +1,8 @@
 import argparse
 
-from shinya.info_dict import InfoDict
-from shinya.mpls import MoviePlaylist
-from shinya.mpls import StreamEntry, StreamAttributes
+from shinya.common.info_dict import InfoDict
+from shinya.bd.mpls import MoviePlaylist
+from shinya.bd.mpls import StreamEntry, StreamAttributes
 
 
 def main(source, destination, clip_filenames, language):
@@ -12,7 +12,7 @@ def main(source, destination, clip_filenames, language):
     for clip_filename in clip_filenames:
         assert len(clip_filename) == 5
         target_index_list = []
-        for index, play_item in enumerate(mpls.dict['PlayList']['PlayItems']):
+        for index, play_item in enumerate(mpls.data['PlayList']['PlayItems']):
             if play_item['ClipInformationFileName'] == clip_filename:
                 target_index_list.append(index)
         if len(target_index_list) == 0:
@@ -22,7 +22,7 @@ def main(source, destination, clip_filenames, language):
             print(f'More than one instance of {clip_filename} are found in the playlist.')
             exit(-1)
         target_index = target_index_list[0]
-        subtitle_list = mpls.dict['PlayList']['PlayItems'][target_index]['STNTable']['PrimaryPGStreamEntries']
+        subtitle_list = mpls.data['PlayList']['PlayItems'][target_index]['STNTable']['PrimaryPGStreamEntries']
 
         se = StreamEntry()
         se['Length'] = 9

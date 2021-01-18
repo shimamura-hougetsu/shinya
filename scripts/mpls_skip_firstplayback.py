@@ -1,6 +1,6 @@
 import argparse
 
-from shinya.mpls import MoviePlaylist
+from shinya.bd.mpls import MoviePlaylist
 
 
 def process_uomask(d):
@@ -12,8 +12,8 @@ def process_uomask(d):
 
 def main(source, destination):
     mpls = MoviePlaylist(source)
-    process_uomask(mpls.dict["AppInfoPlayList"]["UOMaskTable"])
-    for play_item in mpls.dict["PlayList"]["PlayItems"]:
+    process_uomask(mpls.data["AppInfoPlayList"]["UOMaskTable"])
+    for play_item in mpls.data["PlayList"]["PlayItems"]:
         process_uomask(play_item["UOMaskTable"])
     mpls.save(destination)
 

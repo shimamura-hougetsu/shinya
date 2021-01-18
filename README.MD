@@ -17,6 +17,7 @@ pip install -e .
  - [x] Index Table parsing, editing and saving
  - [x] Movie Object parsing, editing and saving
  - [ ] Extension data parsing, editing and saving
+ - [x] Chapter slicing, joining, importing (mpls) and exporting (xml)
 
 ## Scripts
 The purposes of the scripts are briefly described in the usages, more documentation may be available in the future.
@@ -26,4 +27,5 @@ The purposes of the scripts are briefly described in the usages, more documentat
  - https://code.videolan.org/videolan/libbluray
  - https://github.com/justdan96/tsMuxer
  - https://github.com/Guymer/PyGuymer3
+ - https://gitlab.com/mbunkus/mkvtoolnix
 

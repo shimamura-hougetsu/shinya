@@ -10,6 +10,11 @@ Clone and cd into the repository directory, then run:
 ```bash
 pip install -e .
 ```
+or directly from `pypi`:
+```bash
+pip install shinya
+```
+With the second method, you need to download the scripts (and place them anywhere) separately if you need them.
 
 ## Feature and Todo List
  - [x] MPLS parsing, editing and saving

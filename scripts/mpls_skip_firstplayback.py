@@ -1,6 +1,6 @@
 import argparse
 
-from shinya.bd.mpls import MoviePlaylist
+from shinya.bd.mpls import MoviePlaylist, PlayListMarkItem
 
 
 def process_uomask(d):
@@ -15,6 +15,17 @@ def main(source, destination):
     process_uomask(mpls.data["AppInfoPlayList"]["UOMaskTable"])
     for play_item in mpls.data["PlayList"]["PlayItems"]:
         process_uomask(play_item["UOMaskTable"])
+    # add playlist mark
+    mark_time = mpls.data["PlayList"]["PlayItems"][-1]["OUTTime"]
+    ref_pi = len(mpls.data["PlayList"]["PlayItems"]) - 1
+    plm = PlayListMarkItem([('reserved1', 0),
+                            ('MarkType', 1),
+                            ('RefToPlayItemID', ref_pi),
+                            ('MarkTimeStamp', mark_time),
+                            ('EntryESPID', 65535),
+                            ('Duration', 0)]
+                           )
+    mpls.data["PlayListMark"]["PlayListMarks"].append(plm)
     mpls.save(destination)
 
 

@@ -6,8 +6,8 @@ from shinya.common.io import unpack_bytes, pack_bytes
 
 
 class INDXHeader(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -71,8 +71,8 @@ class INDXHeader(InfoDict):
 
 
 class AppInfoBDMV(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -115,8 +115,8 @@ class AppInfoBDMV(InfoDict):
 
 
 class Indexes(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -156,8 +156,8 @@ class Indexes(InfoDict):
 
 
 class Title(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):

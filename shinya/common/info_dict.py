@@ -3,8 +3,8 @@ from collections import OrderedDict
 
 
 class InfoDict(OrderedDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     @abstractmethod

@@ -6,8 +6,8 @@ from shinya.common.io import unpack_bytes, pack_bytes
 
 
 class CLPIHeader(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -107,8 +107,8 @@ class CLPIHeader(InfoDict):
 
 
 class ClipInfo(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -164,8 +164,8 @@ class TSTypeInfoBlock(InfoDict):
     """ Specs from tsMuxer
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -193,8 +193,8 @@ class TSTypeInfoBlock(InfoDict):
 
 
 class SequenceInfo(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -238,8 +238,8 @@ class SequenceInfo(InfoDict):
 
 
 class ATCSequence(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -276,8 +276,8 @@ class ATCSequence(InfoDict):
 
 
 class STCSequence(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -300,8 +300,8 @@ class STCSequence(InfoDict):
 
 
 class ProgramInfo(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -348,8 +348,8 @@ class ProgramInfo(InfoDict):
 
 
 class Program(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -401,8 +401,8 @@ class Program(InfoDict):
 
 
 class StreamCodingInfo(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -480,8 +480,8 @@ class StreamCodingInfo(InfoDict):
 
 
 class CPI(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -596,8 +596,8 @@ class CPI(InfoDict):
 
 
 class EPCoarseEntry(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -616,8 +616,8 @@ class EPCoarseEntry(InfoDict):
 
 
 class EPFineEntry(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -641,8 +641,8 @@ class ClipMark(InfoDict):
     """ No specs available
     """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):

@@ -7,8 +7,8 @@ from shinya.common.io import unpack_bytes, pack_bytes
 
 
 class MOBJHeader(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -59,8 +59,8 @@ class MOBJHeader(InfoDict):
 
 
 class MovieObjects(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -104,8 +104,8 @@ class MovieObjects(InfoDict):
 
 
 class Mobj(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -163,8 +163,8 @@ class SetCommandSubGroup(IntEnum):
 
 
 class NavigationCommand(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):

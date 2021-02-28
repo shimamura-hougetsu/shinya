@@ -6,8 +6,8 @@ from shinya.common.io import unpack_bytes, pack_bytes
 
 
 class MPLSHeader(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -87,8 +87,8 @@ class MPLSHeader(InfoDict):
 
 
 class AppInfoPlayList(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -148,8 +148,8 @@ class AppInfoPlayList(InfoDict):
 
 
 class UOMaskTable(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -240,8 +240,8 @@ class UOMaskTable(InfoDict):
 
 
 class PlayList(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -303,8 +303,8 @@ class PlayList(InfoDict):
 
 
 class PlayItem(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -419,8 +419,8 @@ class STNTable(InfoDict):
         "DVStreamEntries",
     ]
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -500,8 +500,8 @@ class STNTable(InfoDict):
 
 
 class StreamEntry(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -564,8 +564,8 @@ class StreamEntry(InfoDict):
 
 
 class StreamAttributes(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -686,8 +686,8 @@ class StreamAttributes(InfoDict):
 
 
 class SubPath(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -738,8 +738,8 @@ class SubPath(InfoDict):
 
 
 class SubPlayItem(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -808,8 +808,8 @@ class SubPlayItem(InfoDict):
 
 
 class MultiClipEntry(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -832,8 +832,8 @@ class MultiClipEntry(InfoDict):
 
 
 class PlayListMark(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):
@@ -866,8 +866,8 @@ class PlayListMark(InfoDict):
 
 
 class PlayListMarkItem(InfoDict):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def from_bytes(cls, data, **kwargs):

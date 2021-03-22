@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from lxml import etree
 
-from shinya.bd.mpls import MoviePlaylist
+from shinya.bd.mpls import MoviePlaylist, StreamAttributes
 
 
 class MatroskaXMLChapter:
@@ -46,6 +46,23 @@ class MatroskaXMLChapter:
                                    doctype='<!DOCTYPE Chapters SYSTEM "matroskachapters.dtd">',
                                    xml_declaration=True,
                                    pretty_print=True))
+
+
+class QPFile:
+    def __init__(self, chapters, fps):
+        self.iframes = []
+        for _, chapter_entry in enumerate(chapters):
+            time_sec = chapter_entry.time_sec
+            frame = time_sec * fps
+            assert abs(frame - round(frame)) < 0.1
+            self.iframes.append(round(frame))
+
+    def export(self, destination, overwrite=False):
+        if os.path.exists(destination) and not overwrite:
+            raise FileExistsError()
+        os.makedirs(os.path.dirname(destination), exist_ok=True)
+        with open(destination, "w") as f:
+            f.writelines([f"{frame} I\n" for frame in self.iframes])
 
 
 class ChapterEntry:
@@ -112,7 +129,7 @@ class Chapter:
             filename: filename of the mpls file
 
         Returns:
-            A list of tuples, [(play_item_ID: int, chapters: Chapter)..]
+            A list of tuples, [(play_item_ID: int, chapters: Chapter, clip_attributes: dict)..]
         """
         mpls = MoviePlaylist(filename)
         result = []
@@ -143,7 +160,15 @@ class Chapter:
             for raw_time in playlist_marks_dict[play_item_index]:
                 chapter_data.append(ChapterEntry((raw_time - in_time) / 45000))
 
-            result.append((play_item["ClipInformationFileName"], Chapter(chapter_data, end_time)))
+            clip_attr = {}
+            stn_table = play_item["STNTable"]
+            if stn_table["PrimaryVideoStreamEntries"]:
+                stream_attr = stn_table["PrimaryVideoStreamEntries"][0]["StreamAttributes"]
+                if stream_attr["StreamCodingType"] in [0x01, 0x02, 0x1B, 0xEA, 0x24]:
+                    frame_rate = StreamAttributes.frame_rate_lookup[stream_attr["FrameRate"]]
+                    clip_attr['FrameRate'] = frame_rate
+
+            result.append((play_item["ClipInformationFileName"], Chapter(chapter_data, end_time), clip_attr))
 
         return result
 
@@ -155,9 +180,15 @@ class Chapter:
         for c in self.data:
             assert isinstance(c, ChapterEntry)
 
-    def export(self, destination, export_format="xml"):
+    def export(self, destination, export_format="xml", **kwargs):
         if export_format == "xml":
             handler = MatroskaXMLChapter(self)
+            handler.export(destination)
+        elif export_format == "qpf":
+            assert 'clip_attr' in kwargs
+            assert 'FrameRate' in kwargs['clip_attr']
+            fps = kwargs['clip_attr']['FrameRate']
+            handler = QPFile(self, fps)
             handler.export(destination)
         else:
             raise NotImplementedError(f"Exporting chapters to format {export_format} is not supported yet.")

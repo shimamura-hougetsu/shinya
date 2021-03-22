@@ -564,6 +564,9 @@ class StreamEntry(InfoDict):
 
 
 class StreamAttributes(InfoDict):
+    video_format_lookup = {1: '480i', 2: '576i', 3: '480p', 4: '1080i', 5: '720p', 6: '1080p', 7: '576p', 8: '2160p'}
+    frame_rate_lookup = {1: 24000 / 1001, 2: 24, 3: 25, 4: 30000 / 1001, 6: 50, 7: 60000 / 1001}
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 

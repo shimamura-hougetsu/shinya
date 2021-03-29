@@ -16,7 +16,10 @@ class InfoDict(OrderedDict):
             assert self["Length"] == self.calculate_display_size()
 
     def calculate_display_size(self):
-        raise NotImplementedError()
+        if "Length" in self:
+            return self["Length"]
+        else:
+            return 0
 
     def update_counts(self):
         pass

@@ -27,6 +27,7 @@ class CLPIHeader(InfoDict):
         cpi_display_size = unpack_bytes(data, self["CPIStartAddress"], 4)
         clip_mark_display_size = unpack_bytes(data, self["ClipMarkStartAddress"], 4)
 
+        extension_display_size = 0
         if self["ExtensionDataStartAddress"]:
             extension_display_size = unpack_bytes(data, self["ExtensionDataStartAddress"], 4)
 
@@ -51,8 +52,7 @@ class CLPIHeader(InfoDict):
             data[self["ClipMarkStartAddress"]:self["ClipMarkStartAddress"] + clip_mark_display_size + 4])
         if self["ExtensionDataStartAddress"]:
             self["ExtensionData"] = ExtensionData.from_bytes(
-                data[self["ExtensionDataStartAddress"]: self["ExtensionDataStartAddress"] + extension_display_size + 4],
-                self["ExtensionDataStartAddress"])
+                data[self["ExtensionDataStartAddress"]: self["ExtensionDataStartAddress"] + extension_display_size + 4])
 
         assert data == self.to_bytes()
         return self
@@ -102,7 +102,7 @@ class CLPIHeader(InfoDict):
         data += self["CPI"].to_bytes()
         data += self["ClipMark"].to_bytes()
         if self["ExtensionDataStartAddress"]:
-            data += self["ExtensionData"].to_bytes(self["ExtensionDataStartAddress"])
+            data += self["ExtensionData"].to_bytes()
         return data
 
 

@@ -27,8 +27,7 @@ class MOBJHeader(InfoDict):
             extension_display_size = unpack_bytes(data, self["ExtensionDataStartAddress"], 4)
             assert self["ExtensionDataStartAddress"] + extension_display_size + 4 == len(data)
             self["ExtensionData"] = ExtensionData.from_bytes(
-                data[self["ExtensionDataStartAddress"]: self["ExtensionDataStartAddress"] + extension_display_size + 4],
-                self["ExtensionDataStartAddress"])
+                data[self["ExtensionDataStartAddress"]: self["ExtensionDataStartAddress"] + extension_display_size + 4])
         else:
             assert 40 + movie_object_length + 4 == len(data)
 
@@ -54,7 +53,7 @@ class MOBJHeader(InfoDict):
 
         data += self["MovieObjects"].to_bytes()
         if self["ExtensionDataStartAddress"]:
-            data += self["ExtensionData"].to_bytes(self["ExtensionDataStartAddress"])
+            data += self["ExtensionData"].to_bytes()
         return data
 
 

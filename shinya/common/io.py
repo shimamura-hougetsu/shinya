@@ -10,4 +10,3 @@ def unpack_bytes(data, offset, length):
 
 def pack_bytes(data, length):
     return struct.pack(FORMAT_CHAR[length], data)
-

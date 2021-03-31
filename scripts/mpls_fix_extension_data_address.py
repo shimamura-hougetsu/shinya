@@ -22,7 +22,10 @@ def fix_ext_address(source, destination):
     if ext_addr:
         expected_ext_addr = plm_addr + plm_size + 4
         if expected_ext_addr != ext_addr:
-            data = data[:16] + pack_bytes(expected_ext_addr, 4) + data[20:]
+            if expected_ext_addr < len(data):
+                data = data[:16] + pack_bytes(expected_ext_addr, 4) + data[20:]
+            else:
+                data = data[:16] + pack_bytes(0, 4) + data[20:]
     with open(destination, "wb") as f:
         f.write(data)
 

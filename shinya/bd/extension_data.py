@@ -41,28 +41,30 @@ class ExtensionData(InfoDict):
             return 0
 
     def check_constraints(self):
-        assert self["NumberOfExtDataEntries"] == len(self["ExtDataEntryInfo"])
-        assert self["NumberOfExtDataEntries"] == len(self["ExtDataEntry"])
-        for ext_data_info, ext_data in zip(self["ExtDataEntryInfo"], self["ExtDataEntry"]):
-            assert ext_data_info["ExtDataLength"] == ext_data.calculate_display_size()
-        if len(self["ExtDataEntryInfo"]):
-            assert self["ExtDataEntryInfo"][0]["ExtDataStartAddress"] == self["DataBlockStartAddress"]
+        if self["Length"]:
+            assert self["NumberOfExtDataEntries"] == len(self["ExtDataEntryInfo"])
+            assert self["NumberOfExtDataEntries"] == len(self["ExtDataEntry"])
+            for ext_data_info, ext_data in zip(self["ExtDataEntryInfo"], self["ExtDataEntry"]):
+                assert ext_data_info["ExtDataLength"] == ext_data.calculate_display_size()
+            if len(self["ExtDataEntryInfo"]):
+                assert self["ExtDataEntryInfo"][0]["ExtDataStartAddress"] == self["DataBlockStartAddress"]
 
     def to_bytes(self):
         self.check_constraints()
         data = b""
         data += pack_bytes(self["Length"], 4)
-        data += pack_bytes(self["DataBlockStartAddress"], 4)
-        data += pack_bytes(self["reserved1"], 2)
-        data += pack_bytes(self["reserved2"], 1)
-        data += pack_bytes(self["NumberOfExtDataEntries"], 1)
-        for ext_data_info in self["ExtDataEntryInfo"]:
-            data += pack_bytes(ext_data_info["ExtDataType"], 2)
-            data += pack_bytes(ext_data_info["ExtDataVersion"], 2)
-            data += pack_bytes(ext_data_info["ExtDataStartAddress"], 4)
-            data += pack_bytes(ext_data_info["ExtDataLength"], 4)
-        for ext_data in self["ExtDataEntry"]:
-            data += ext_data.to_bytes()
+        if self["Length"]:
+            data += pack_bytes(self["DataBlockStartAddress"], 4)
+            data += pack_bytes(self["reserved1"], 2)
+            data += pack_bytes(self["reserved2"], 1)
+            data += pack_bytes(self["NumberOfExtDataEntries"], 1)
+            for ext_data_info in self["ExtDataEntryInfo"]:
+                data += pack_bytes(ext_data_info["ExtDataType"], 2)
+                data += pack_bytes(ext_data_info["ExtDataVersion"], 2)
+                data += pack_bytes(ext_data_info["ExtDataStartAddress"], 4)
+                data += pack_bytes(ext_data_info["ExtDataLength"], 4)
+            for ext_data in self["ExtDataEntry"]:
+                data += ext_data.to_bytes()
         return data
 
 

@@ -10,7 +10,7 @@ class CLPIHeader(InfoDict):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def from_bytes(cls, data, **kwargs):
+    def from_bytes(cls, data, strict=True, **kwargs):
         self = cls()
         self["TypeIndicator"] = data[0:4].decode("utf-8")
         self["VersionNumber"] = data[4:8].decode("utf-8")
@@ -31,16 +31,17 @@ class CLPIHeader(InfoDict):
         if self["ExtensionDataStartAddress"]:
             extension_display_size = unpack_bytes(data, self["ExtensionDataStartAddress"], 4)
 
-        assert 40 + clip_info_display_size + 4 == self["SequenceInfoStartAddress"]
-        assert self["SequenceInfoStartAddress"] + sequence_info_display_size + 4 == self["ProgramInfoStartAddress"]
-        assert self["ProgramInfoStartAddress"] + program_info_display_size + 4 == self["CPIStartAddress"]
-        assert self["CPIStartAddress"] + cpi_display_size + 4 == self["ClipMarkStartAddress"]
+        if strict:
+            assert 40 + clip_info_display_size + 4 == self["SequenceInfoStartAddress"]
+            assert self["SequenceInfoStartAddress"] + sequence_info_display_size + 4 == self["ProgramInfoStartAddress"]
+            assert self["ProgramInfoStartAddress"] + program_info_display_size + 4 == self["CPIStartAddress"]
+            assert self["CPIStartAddress"] + cpi_display_size + 4 == self["ClipMarkStartAddress"]
 
-        if self["ExtensionDataStartAddress"]:
-            assert self["ClipMarkStartAddress"] + clip_mark_display_size + 4 == self["ExtensionDataStartAddress"]
-            assert self["ExtensionDataStartAddress"] + extension_display_size + 4 == len(data)
-        else:
-            assert self["ClipMarkStartAddress"] + clip_mark_display_size + 4 == len(data)
+            if self["ExtensionDataStartAddress"]:
+                assert self["ClipMarkStartAddress"] + clip_mark_display_size + 4 == self["ExtensionDataStartAddress"]
+                assert self["ExtensionDataStartAddress"] + extension_display_size + 4 == len(data)
+            else:
+                assert self["ClipMarkStartAddress"] + clip_mark_display_size + 4 == len(data)
 
         self["ClipInfo"] = ClipInfo.from_bytes(data[40: 40 + clip_info_display_size + 4])
         self["SequenceInfo"] = SequenceInfo.from_bytes(
@@ -54,7 +55,8 @@ class CLPIHeader(InfoDict):
             self["ExtensionData"] = ExtensionData.from_bytes(
                 data[self["ExtensionDataStartAddress"]: self["ExtensionDataStartAddress"] + extension_display_size + 4])
 
-        assert data == self.to_bytes()
+        if strict:
+            assert data == self.to_bytes()
         return self
 
     def update_addresses(self, offset=0):
@@ -669,16 +671,17 @@ class ClipMark(InfoDict):
 
 
 class ClipInformationFile:
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, strict=True):
+        self.strict = strict
         if not filename:
             self.data = CLPIHeader()
         else:
-            self.load(filename)
+            self.load(filename, self.strict)
 
-    def load(self, filename):
+    def load(self, filename, strict):
         with open(filename, "rb") as f:
             data = f.read()
-        self.data = CLPIHeader.from_bytes(data)
+        self.data = CLPIHeader.from_bytes(data, strict=strict)
 
     def save(self, destination, overwrite=False):
         self.data.update_constants()

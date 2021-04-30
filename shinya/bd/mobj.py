@@ -11,7 +11,7 @@ class MOBJHeader(InfoDict):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def from_bytes(cls, data, **kwargs):
+    def from_bytes(cls, data, strict=True, **kwargs):
         self = cls()
         self["TypeIndicator"] = data[0:4].decode("utf-8")
         self["VersionNumber"] = data[4:8].decode("utf-8")
@@ -21,17 +21,22 @@ class MOBJHeader(InfoDict):
         movie_object_length = unpack_bytes(data, 40, 4)
         self['MovieObjects'] = MovieObjects.from_bytes(data[40: 40 + movie_object_length + 4])
 
+        extension_display_size = 0
         if self["ExtensionDataStartAddress"]:
-            assert (self["PlayListMarkStartAddress"] + movie_object_length + 4 == self[
-                "ExtensionDataStartAddress"])
             extension_display_size = unpack_bytes(data, self["ExtensionDataStartAddress"], 4)
-            assert self["ExtensionDataStartAddress"] + extension_display_size + 4 == len(data)
             self["ExtensionData"] = ExtensionData.from_bytes(
                 data[self["ExtensionDataStartAddress"]: self["ExtensionDataStartAddress"] + extension_display_size + 4])
-        else:
-            assert 40 + movie_object_length + 4 == len(data)
 
-        assert data == self.to_bytes()
+        if strict:
+            if self["ExtensionDataStartAddress"]:
+                assert (self["PlayListMarkStartAddress"] + movie_object_length + 4 == self["ExtensionDataStartAddress"])
+                assert self["ExtensionDataStartAddress"] + extension_display_size + 4 == len(data)
+
+            else:
+                assert 40 + movie_object_length + 4 == len(data)
+
+            assert data == self.to_bytes()
+
         return self
 
     def update_addresses(self, offset=0):
@@ -315,16 +320,17 @@ class NavigationCommand(InfoDict):
 
 
 class MovieObjectFile:
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, strict=True):
+        self.strict = strict
         if not filename:
             self.data = MOBJHeader()
         else:
-            self.load(filename)
+            self.load(filename, self.strict)
 
-    def load(self, filename):
+    def load(self, filename, strict):
         with open(filename, "rb") as f:
             data = f.read()
-        self.data = MOBJHeader.from_bytes(data)
+        self.data = MOBJHeader.from_bytes(data, strict=strict)
 
     def save(self, destination, overwrite=False):
         self.data.update_constants()

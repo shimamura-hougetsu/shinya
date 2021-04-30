@@ -1,14 +1,14 @@
 import argparse
 
-from shinya.common.info_dict import InfoDict
-from shinya.bd.mpls import MoviePlaylist
+from shinya.bd import MoviePlaylistFile
 from shinya.bd.mpls import StreamEntry, StreamAttributes
+from shinya.common.info_dict import InfoDict
 
 
 def main(source, destination, clip_filenames, language):
     assert len(language) == 3
 
-    mpls = MoviePlaylist(source)
+    mpls = MoviePlaylistFile(source)
     for clip_filename in clip_filenames:
         assert len(clip_filename) == 5
         target_index_list = []

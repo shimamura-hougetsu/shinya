@@ -3,7 +3,7 @@ from copy import deepcopy
 
 from lxml import etree
 
-from shinya.bd.mpls import MoviePlaylist, StreamAttributes
+from shinya.bd.mpls import MoviePlaylistFile, StreamAttributes
 
 
 class MatroskaXMLChapter:
@@ -131,7 +131,7 @@ class Chapter:
         Returns:
             A list of tuples, [(play_item_ID: int, chapters: Chapter, clip_attributes: dict)..]
         """
-        mpls = MoviePlaylist(filename)
+        mpls = MoviePlaylistFile(filename)
         result = []
         play_items = mpls.data["PlayList"]["PlayItems"]
         playlist_marks = mpls.data["PlayListMark"]["PlayListMarks"]

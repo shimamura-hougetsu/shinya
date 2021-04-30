@@ -10,7 +10,7 @@ class MPLSHeader(InfoDict):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def from_bytes(cls, data, **kwargs):
+    def from_bytes(cls, data, strict=True, **kwargs):
         self = cls()
         self["TypeIndicator"] = data[0:4].decode("utf-8")
         self["VersionNumber"] = data[4:8].decode("utf-8")
@@ -27,15 +27,16 @@ class MPLSHeader(InfoDict):
         if self["ExtensionDataStartAddress"]:
             extension_display_size = unpack_bytes(data, self["ExtensionDataStartAddress"], 4)
 
-        assert appinfo_display_size == 14
-        assert self["PlayListStartAddress"] == 58
-        assert (self["PlayListStartAddress"] + playlist_display_size + 4 == self["PlayListMarkStartAddress"])
-        if self["ExtensionDataStartAddress"]:
-            assert (self["PlayListMarkStartAddress"] + playlist_mark_display_size + 4 == self[
-                "ExtensionDataStartAddress"])
-            assert self["ExtensionDataStartAddress"] + extension_display_size + 4 == len(data)
-        else:
-            assert self["PlayListMarkStartAddress"] + playlist_mark_display_size + 4 == len(data)
+        if strict:
+            assert appinfo_display_size == 14
+            assert self["PlayListStartAddress"] == 58
+            assert (self["PlayListStartAddress"] + playlist_display_size + 4 == self["PlayListMarkStartAddress"])
+            if self["ExtensionDataStartAddress"]:
+                assert (self["PlayListMarkStartAddress"] + playlist_mark_display_size + 4 == self[
+                    "ExtensionDataStartAddress"])
+                assert self["ExtensionDataStartAddress"] + extension_display_size + 4 == len(data)
+            else:
+                assert self["PlayListMarkStartAddress"] + playlist_mark_display_size + 4 == len(data)
 
         self["AppInfoPlayList"] = AppInfoPlayList.from_bytes(data[40: 40 + appinfo_display_size + 4])
         self["PlayList"] = PlayList.from_bytes(
@@ -46,7 +47,8 @@ class MPLSHeader(InfoDict):
             self["ExtensionData"] = ExtensionData.from_bytes(
                 data[self["ExtensionDataStartAddress"]: self["ExtensionDataStartAddress"] + extension_display_size + 4])
 
-        assert data == self.to_bytes()
+        if strict:
+            assert data == self.to_bytes()
         return self
 
     def update_addresses(self, offset=0):
@@ -897,17 +899,18 @@ class PlayListMarkItem(InfoDict):
         return data
 
 
-class MoviePlaylist:
-    def __init__(self, filename=None):
+class MoviePlaylistFile:
+    def __init__(self, filename=None, strict=True):
+        self.strict = strict
         if not filename:
             self.data = MPLSHeader()
         else:
-            self.load(filename)
+            self.load(filename, self.strict)
 
-    def load(self, filename):
+    def load(self, filename, strict):
         with open(filename, "rb") as f:
             data = f.read()
-        self.data = MPLSHeader.from_bytes(data)
+        self.data = MPLSHeader.from_bytes(data, strict=strict)
 
     def save(self, destination, overwrite=False):
         self.data.update_constants()

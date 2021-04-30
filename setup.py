@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="shinya",
-    version="0.1a1",
+    version="0.2a1",
     description='A Python package to edit BDMV components like MPLS, CLPI, etc.',
     url='http://github.com/shimamura-hougetsu/shinya',
     author='Shimamura Hougetsu',

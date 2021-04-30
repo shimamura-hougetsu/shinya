@@ -1,10 +1,10 @@
 import argparse
 
-from shinya.bd.mpls import MoviePlaylist
+from shinya.bd import MoviePlaylistFile
 
 
 def main(source, destination):
-    mpls = MoviePlaylist(source)
+    mpls = MoviePlaylistFile(source)
     mpls.save(destination)
 
 

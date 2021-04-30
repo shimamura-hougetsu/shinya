@@ -1,13 +1,13 @@
 import argparse
 
-from shinya.bd.mpls import MoviePlaylist
+from shinya.bd import MoviePlaylistFile
 from shinya.common.io import unpack_bytes, pack_bytes
 
 
 def check_integrity(input_file):
     success = True
     try:
-        MoviePlaylist(input_file)
+        MoviePlaylistFile(input_file)
     except:
         success = False
     return success

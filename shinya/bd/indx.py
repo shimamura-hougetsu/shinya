@@ -10,7 +10,7 @@ class INDXHeader(InfoDict):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def from_bytes(cls, data, **kwargs):
+    def from_bytes(cls, data, strict=True, **kwargs):
         self = cls()
         self["TypeIndicator"] = data[0:4].decode("utf-8")
         self["VersionNumber"] = data[4:8].decode("utf-8")
@@ -25,13 +25,14 @@ class INDXHeader(InfoDict):
         if self["ExtensionDataStartAddress"]:
             extension_display_size = unpack_bytes(data, self["ExtensionDataStartAddress"], 4)
 
-        assert appinfo_display_size == 34
-        assert self["IndexesStartAddress"] == 78
-        if self["ExtensionDataStartAddress"]:
-            assert (self["IndexesStartAddress"] + indexes_display_size + 4 == self["ExtensionDataStartAddress"])
-            assert self["ExtensionDataStartAddress"] + extension_display_size + 4 == len(data)
-        else:
-            assert self["IndexesStartAddress"] + indexes_display_size + 4 == len(data)
+        if strict:
+            assert appinfo_display_size == 34
+            assert self["IndexesStartAddress"] == 78
+            if self["ExtensionDataStartAddress"]:
+                assert (self["IndexesStartAddress"] + indexes_display_size + 4 == self["ExtensionDataStartAddress"])
+                assert self["ExtensionDataStartAddress"] + extension_display_size + 4 == len(data)
+            else:
+                assert self["IndexesStartAddress"] + indexes_display_size + 4 == len(data)
 
         self["AppInfoBDMV"] = AppInfoBDMV.from_bytes(data[40: 40 + appinfo_display_size + 4])
         self["Indexes"] = Indexes.from_bytes(
@@ -39,8 +40,8 @@ class INDXHeader(InfoDict):
         if self["ExtensionDataStartAddress"]:
             self["ExtensionData"] = ExtensionData.from_bytes(
                 data[self["ExtensionDataStartAddress"]: self["ExtensionDataStartAddress"] + extension_display_size + 4])
-
-        assert data == self.to_bytes()
+        if strict:
+            assert data == self.to_bytes()
         return self
 
     def update_addresses(self, offset=0):
@@ -197,16 +198,17 @@ class Title(InfoDict):
 
 
 class IndexTableFile:
-    def __init__(self, filename=None):
+    def __init__(self, filename=None, strict=True):
+        self.strict = strict
         if not filename:
             self.data = INDXHeader()
         else:
-            self.load(filename)
+            self.load(filename, self.strict)
 
-    def load(self, filename):
+    def load(self, filename, strict):
         with open(filename, "rb") as f:
             data = f.read()
-        self.data = INDXHeader.from_bytes(data)
+        self.data = INDXHeader.from_bytes(data, strict=strict)
 
     def save(self, destination, overwrite=False):
         self.data.update_constants()
